@@ -1,0 +1,26 @@
+.ichoices_wrapper {
+	border: 1px solid #E4E4E4;
+	padding: 20px;
+	background-color: #F6F6F6;
+	max-height: 220px;
+	overflow: hidden;
+}
+#gform_fields #field_ichoices li.field-ichoice-row {
+	overflow: hidden;
+}
+#field_ichoices .field-ichoice-handle {
+	float: left;
+	vertical-align: top;
+	cursor: move;
+}
+#field_ichoices .ifield-container {
+	margin-left: 20px;
+	width: auto;
+	border: 1px solid #DFDFDF;
+	padding: 5px;
+}
+#field_ichoices a.gf_insert_field_choice, 
+#field_ichoices a.gf_delete_field_choice {
+	float: right;
+	margin: 5px 0 5px 6px;
+}

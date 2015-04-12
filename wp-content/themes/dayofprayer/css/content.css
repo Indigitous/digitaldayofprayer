@@ -1,0 +1,270 @@
+/*--------------------------------------------------------------
+ * Visual Composer
+ *------------------------------------------------------------*/
+.wpb_single_image.wpb_content_element {
+	margin-bottom: 15px;
+}
+
+/*--------------------------------------------------------------
+1.0 Scaffolding
+--------------------------------------------------------------*/
+.section {
+	margin: 0 -999em;
+	padding: 2em 0;
+	overflow: hidden;
+}
+.section.primary {
+	color: #ffffff;
+	background: #53469f;
+}
+.section.primary h1,
+.section.primary h2,
+.section.primary h3,
+.section.primary h4,
+.section.primary h5,
+.section.primary h6 {
+	color: #7f74b8;
+}
+@media screen and (max-width: 600px) {
+	.section {
+		margin: 0 -15px;
+	}
+	h2.choice-title {
+		font-size: 1.8em;
+		margin: 0;
+	}
+}
+
+
+/*--------------------------------------------------------------
+2.0 DoP Form
+--------------------------------------------------------------*/
+.dop-form {
+
+}
+.dop-form .gform_wrapper {
+	width: 600px;
+	margin: 0 auto;
+	max-width: 100%;
+	position: relative;
+}
+.dop-form .gform_body {
+	margin: 2em 0 0;
+}
+.dop-form .gform_page {
+	padding-bottom: 50px;
+}
+.dop-form .gform_page_footer {
+	text-align: right;
+	margin: 1em 0 0;
+}
+.dop-form .gform_previous_button {
+	position: absolute;
+	left: -150px;
+	top: 40%;
+	z-index: 20;
+	padding: 0;
+	text-indent: -999em;
+	border: 0;
+	width: 34px;
+	height: 61px;
+	background: transparent no-repeat url('../images/gf/gf-previous-page.png') !important;
+	opacity: .4;
+	-webkit-transition: opacity .15s;
+	   -moz-transition: opacity .15s;
+			transition: opacity .15s;
+}
+.dop-form .gform_previous_button:hover {
+	opacity: 1;
+}
+.dop-form .gform_page_footer input[type=button],
+.dop-form .gform_page_footer input[type=submit] {
+	margin-left: 15px;
+}
+.dop-form .gform_fields,
+.dop-form .gform_fields ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	overflow: hidden;
+}
+.dop-form .gfield_checkbox input[type=checkbox],
+.dop-form .gfield_radio input[type=radio],
+.dop-form .gfield_infoselect input[type=radio] {
+	display: none;
+}
+.dop-form .gfield_checkbox label,
+.dop-form .gfield_radio label,
+.dop-form .gfield_infoselect label {
+	font-family: 'Museo Slab', serif;
+	font-size: 1.1em;
+	text-transform: uppercase;
+	border: 1px solid rgba( 255, 255, 255, .3 );
+	margin: 0;
+	padding: 6px 15px 6px 12px;
+	border-radius: 5px;
+	display: block;
+	cursor: pointer;
+}
+.dop-form .gfield_infoselect label {
+	position: relative;
+}
+
+.dop-form .gfield_checkbox li,
+.dop-form .gfield_radio li {
+	padding: 5px;
+	width: 50%;
+	float: left;
+	position: relative;
+	z-index: 10;
+}
+.dop-form .count {
+	color: #ffffff;
+	font-family: 'Museo Slab', serif;
+	font-size: 13px;
+	text-align: center;
+	line-height: 24px;
+	position: absolute;
+	top: 50%;
+	margin-top: -12px;
+	right: 15px;
+	width: 24px;
+	height: 24px;
+	border-radius: 24px;
+	background: #7f74b8;
+	pointer-events: none;
+}
+.dop-form .gfield_checkbox label.active,
+.dop-form .gfield_radio label.active,
+.dop-form .gfield_infoselect label.active {
+	color: #53469f !important;
+	background: #ffffff !important;
+	border: 1px solid #ffffff !important;
+}
+.dop-form .gfield_checkbox li:hover label,
+.dop-form .gfield_radio li:hover label,
+.dop-form .gfield_infoselect label:hover {
+	background: #7f74b8;
+	border: 1px solid #7f74b8;
+}
+.dop-form .gfield_checkbox li:hover .count,
+.dop-form .gfield_radio li:hover .count,
+.dop-form .gfield_infoselect li label:hover .count {
+	color: #ffffff;
+	background: #53469f;
+}
+
+.dop-form .four-column .gfield_checkbox li,
+.dop-form .four-column .gfield_radio li {
+	width: 25%;
+}
+@media screen and (max-width: 600px) {
+	.dop-form .four-column .gfield_checkbox li,
+	.dop-form .four-column .gfield_radio li {
+		width: 50%;
+	}
+}
+.dop-form .gform_confirmation_message {
+	text-align: center;
+	padding: 4em 0;
+}
+
+.dop-form .gfield_label {
+	display: none;
+}
+.dop-form .ichoices_wrapper {
+	text-align: center;
+	margin: 0 -15px;
+}
+.ichoice {
+	float: left;
+	width: 50%;
+	padding: 15px;
+}
+.ichoice:nth-child(odd) {
+	clear: left;
+}
+
+.gfield {
+
+}
+.gfield.tab {
+	float: left;
+}
+.gfield.tab:first-child {
+  clear: left;
+}
+.gfield.tab .gfield_label {
+	font-family: 'Museo Slab', serif;
+	text-transform: uppercase;
+	margin: 0 0 0 15px;
+	padding: 0 10px;
+	height: 50px;
+	line-height: 50px;
+	display: block;
+	cursor: pointer;
+	opacity: .5;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+	border: 1px solid #ffffff;
+	border-bottom: 0;
+	background: #53469F;
+	position: relative;
+	z-index: 0;
+	-webkit-transition: opacity .15s;
+	   -moz-transition: opacity .15s;
+			transition: opacity .15s;
+}
+.gfield.tab .gfield_label:hover {
+	opacity: .8;
+}
+
+.gfield.tab.active .gfield_label {
+	opacity: 1;
+	z-index: 5;
+}
+.gfield .ginput_container {
+	float: left;
+	width: 100%;
+}
+.gfield.tab .ginput_container {
+	display: none;
+	position: absolute;
+	left: 0;
+	width: 600px;
+	max-width: 100%;
+	border: 1px solid #ffffff;
+	padding: 15px;
+	border-radius: 8px;
+	margin: -1px 0 0;
+	z-index: 1;
+}
+
+.gfield.tab.active .ginput_container {
+	display: block;
+}
+/* Center the last email and submit fields */
+.dop-form #input_1_11,
+.dop-form .gform_page_footer input[type=submit] {
+	width: 300px;
+	margin: 0 auto;
+	display: block;
+}
+.dop-form .gf_page_steps {
+	text-align: center;
+}
+.dop-form .gf_step {
+	display: none !important;
+	text-indent: -9999px;
+	width: 16px;
+	height: 16px;
+	border-radius: 16px;
+	display: inline-block;
+	margin: 2px;
+	border: 1px solid rgba( 255, 255, 255, .4);
+}
+.dop-form .gf_step.gf_step_active {
+	border: 1px solid #ffffff;
+	background: #ffffff;
+	box-shadow: inset 0px 0px 0px 2px rgba(83, 70, 159, 1);
+}
