@@ -307,6 +307,15 @@ h5 {
 h6 {
 	font-size: 1.1em;
 }
+h1 a,
+h2 a,
+h3 a,
+h4 a,
+h5 a,
+h6 a {
+	color: inherit;
+	text-decoration: none !important;
+}
 p {
 	margin: 0 0 1.5em;
 }
@@ -537,6 +546,7 @@ a {
 }
 
 a:hover {
+	color: #7f74b8;
 	text-decoration: underline;
 }
 

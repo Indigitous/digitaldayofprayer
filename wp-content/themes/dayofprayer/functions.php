@@ -12,8 +12,27 @@ if ( ! isset( $content_width ) ) {
 	$content_width = 640; /* pixels */
 }
 
-require_once 'cmb2.php';
-require_once 'template-functions.php';
+require_once 'config.php';
+
+/**
+ * Custom template tags for this theme.
+ */
+require get_template_directory() . '/inc/template-tags.php';
+
+/**
+ * Custom functions that act independently of the theme templates.
+ */
+require get_template_directory() . '/inc/extras.php';
+
+/**
+ * Customizer additions.
+ */
+require get_template_directory() . '/inc/customizer.php';
+
+/**
+ * Load Jetpack compatibility file.
+ */
+require get_template_directory() . '/inc/jetpack.php';
 
 if ( ! function_exists( 'dxl_setup' ) ) :
 /**
@@ -143,38 +162,9 @@ function my_enqueue( $hook ) {
 }
 add_action( 'admin_enqueue_scripts', 'my_enqueue' );
 
-/**
- * Implement the Custom Header feature.
- */
-//require get_template_directory() . '/inc/custom-header.php';
-
-/**
- * Custom template tags for this theme.
- */
-require get_template_directory() . '/inc/template-tags.php';
-
-/**
- * Custom functions that act independently of the theme templates.
- */
-require get_template_directory() . '/inc/extras.php';
-
-/**
- * Customizer additions.
- */
-require get_template_directory() . '/inc/customizer.php';
-
-/**
- * Load Jetpack compatibility file.
- */
-require get_template_directory() . '/inc/jetpack.php';
 
 
-
-
-
-// Add a custom field button to the advanced to the field editor
-add_filter( 'gform_add_field_buttons', 'wps_add_infoselect_field' );
-function wps_add_infoselect_field( $field_groups ) {
+function add_infoselect_field( $field_groups ) {
 	foreach( $field_groups as &$group ){
 		if( $group["name"] == "advanced_fields" ){ // to add to the Advanced Fields
 			//if( $group["name"] == "standard_fields" ){ // to add to the Standard Fields
@@ -190,30 +180,31 @@ function wps_add_infoselect_field( $field_groups ) {
 	}
 	return $field_groups;
 }
+add_filter( 'gform_add_field_buttons', 'add_infoselect_field' );
 
 function ichoice_value_match( $field, $choice, $value ) {
-		$choice_value = GFFormsModel::maybe_trim_input( $choice['title'], $field->formId, $field );
-		$value        = GFFormsModel::maybe_trim_input( $value, $field->formId, $field );
-		if ( $choice_value == $value ) {
+	$choice_value = GFFormsModel::maybe_trim_input( $choice['title'], $field->formId, $field );
+	$value        = GFFormsModel::maybe_trim_input( $value, $field->formId, $field );
+	if ( $choice_value == $value ) {
+		return true;
+	} else if ( $field->enablePrice ) {
+		$ary   = explode( '|', $value );
+		$val   = count( $ary ) > 0 ? $ary[0] : '';
+		$price = count( $ary ) > 1 ? $ary[1] : '';
+
+		if ( $val == $choice['title'] ) {
 			return true;
-		} else if ( $field->enablePrice ) {
-			$ary   = explode( '|', $value );
-			$val   = count( $ary ) > 0 ? $ary[0] : '';
-			$price = count( $ary ) > 1 ? $ary[1] : '';
-
-			if ( $val == $choice['title'] ) {
-				return true;
-			}
-		} // add support for prepopulating multiselects @alex
-		else if ( RGFormsModel::get_input_type( $field ) == 'multiselect' ) {
-			$values = explode( ',', $value );
-			if ( in_array( $choice_value, $values ) ) {
-				return true;
-			}
 		}
-
-		return false;
+	} // add support for prepopulating multiselects @alex
+	else if ( RGFormsModel::get_input_type( $field ) == 'multiselect' ) {
+		$values = explode( ',', $value );
+		if ( in_array( $choice_value, $values ) ) {
+			return true;
+		}
 	}
+
+	return false;
+}
 
 // Adds title to GF custom field
 add_filter( 'gform_field_type_title' , 'wps_infoselect_title' );
@@ -248,9 +239,9 @@ function wps_infoselect_field_input ( $input, $field, $value = '', $lead_id, $fo
 			$checked = ichoice_value_match( $field, $choice, $value ) ? "checked='checked'" : '';;
 
 			$html .= '<li class="ichoice gichoice_' . $choice_id . '">';
-			$html .= '<div class="choice_image">';
-			$html .= '<img src="' . $choice['image'] . '" />';
-			$html .= '</div>';
+			//$html .= '<div class="choice_image">';
+			//$html .= '<img src="' . $choice['image'] . '" />';
+			//$html .= '</div>';
 			$html .= '<h2 class="choice-title">' . $choice['title'] . '</h2>';
 			$html .= '<div class="choice-footer">';
 			$html .= '<input type="radio" ' . $checked . ' name="input_' . $field['id'] . '" id="' . $choice_id . '" value="' . $choice['title'] . '" />';
@@ -439,40 +430,12 @@ function wps_infoselect_settings( $position, $form_id ){
 	    this.desc = desc ? desc : "";
 	}
 
-
-	/*
-	function UpdateInfoSelectChoices(fieldType){
-	    var choices = '';
-	    var selector = '';
-
-	    var skip = 0;
-
-	    //console.log( field );
-
-        for(var i=0; i<field.ichoices.length; i++)
-        {
-            var id = 'choice_' + field.id + '_' + i;
-            checked = field.ichoices[i].isSelected ? "checked" : "";
-            if(i < 5)
-                choices += "<li><input type='" + fieldType + "' " + checked + " id='" + id +"' disabled='disabled'><label for='" + id + "'>" + field.ichoices[i].text + "</label></li>";
-        }
-
-        choices += field.enableOtherChoice ? "<li><input type='" + fieldType + "' " + checked + " id='" + id +"' disabled='disabled'><input type='text' value='" + gf_vars.otherChoiceValue + "'  disabled='disabled' /></li>" : "";
-
-        //if(field.ichoices.length > 5)
-            //choices += "<li class='gchoice_total'>" + gf_vars["editToViewAll"].replace("%d", field.ichoices.length) + "</li>";
-
-
-	    selector = '.gfield_' + fieldType;
-	    jQuery(".field_selected " + selector).html(choices);
-	}
-	*/
-
 	</script>
 	</li>
 	<?php
 	}
 }
+
 //Filter to add a new tooltip
 add_filter('gform_tooltips', 'wps_add_infoselect_tooltips');
 function wps_add_infoselect_tooltips($tooltips){
@@ -518,51 +481,157 @@ function infoselect_default() { ?>
 
 add_action( 'gform_editor_js_set_default_values', 'infoselect_default' );
 
-function submission( $lead, $form ) {
+/**
+ * Replaces the template variable with the new value
+ * 
+ * Passed by reference
+ * 
+ * @param type &$template 
+ * @param type $var 
+ * @param type $value 
+ * @return type
+ */
+function template_var( &$template, $var, $value ) {
+	if( $template = str_replace( $var, $value, $template ) )
+		return true;
+
+	return false;
+}
+
+/**
+ * Grabs the email template to be sent upon form submission
+ * 
+ * Replaces the template variables with appropriate data from
+ * the form and lead
+ * 
+ * @param type $lead 
+ * @param type $form 
+ * @return type
+ */
+function after_submission( $lead, $form ) {
+	global $redux;
+
 	if( $lead['form_id'] != 1 )
 		return;
 
 	$email = $lead['11'];
+	$times = array();
+	$city = '';
+	$country = $lead['4'];
+
+	foreach( $lead as $field => $value ) {
+		if( empty( $city ) && in_array( $field, array( 13, 17, 19, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50 ) ) ) {
+			if( isset( $value ) && ! empty( $value ) ) {
+				$city = $lead[$field];
+			}
+		}
+
+		if( preg_match( '/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/', $value ) ) {
+			$times[] = $value;
+		}
+	}
+
+	if( empty( $city ) )
+		return false;
+
+	foreach( $form['fields'] as $id => $field ) {
+		if( ! isset( $field->ichoices ) )
+			continue;
+
+		foreach( $field->ichoices as $key => $c ) {
+			if( $c['title'] == $city ) {
+				$image = $c['image'];
+				break;
+			}
+		}
+
+		if( isset( $image ) )
+			break;
+	}
+
+	
+	$email_template = @file_get_contents( __DIR__ . '/emails/dop-confirmation.html' );
+
+	if( ! $email_template || empty( $email_template ) )
+		return false;
+
+	if( empty( $times ) ) {
+		$times = 'Any Time!';
+	}else {
+		$times = implode( ', ', $times );
+	}
+
+	if( empty( $image ) ) {
+		$image = '<p>&nbsp;</p>';
+	}else {
+		$image = '<p><img src="http://digitaldayofprayer.org/wp-content/themes/dayofprayer/images/cities/' . $image . '"></p>';
+	}
+
+	@template_var( $email_template, '{FIELD_IMAGE}', $image );
+	@template_var( $email_template, '{FIELD_CITY}', $city );
+	@template_var( $email_template, '{FIELD_COUNTRY}', $country );
+	@template_var( $email_template, '{FIELD_TIMES}', $times );
+
+	$headers  = 'MIME-Version: 1.0' . "\r\n";
+	$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
 
 	if( is_email( $email ) ) {
-		$send = wp_mail( $email, 'Subject is here', 'content' );
+		$send = wp_mail( $email, $redux['email_subject'], $email_template, $headers );
 	}
+	
 }
-add_action( 'gform_after_submission', 'submission', 15, 2 );
+add_action( 'gform_after_submission', 'after_submission', 15, 2 );
 
-function spinner_url($image_src, $form){
+
+/**
+ * Change the loading spinner
+ * 
+ * @param type $image_src 
+ * @param type $form 
+ * @return type
+ */
+function spinner_url( $image_src, $form ){
     return get_stylesheet_directory_uri() . '/images/gf/spinner.gif';
 }
-add_filter("gform_ajax_spinner_url", "spinner_url", 10, 2);
+add_filter( 'gform_ajax_spinner_url', 'spinner_url', 10, 2 );
 
-add_filter( 'gform_field_content', 'subsection_field', 10, 5 );
-function subsection_field($content, $field, $value, $lead_id, $form_id){
-	return $content;
-}
 
-function testa( $value, $id, $input_id, $choice_value ) {
+/**
+ * Displays the number of entries for a particular checkbox / radio
+ * 
+ * @param html $choice_markup 
+ * @param array $choice 
+ * @param object $this 
+ * @param string $value 
+ * @return string
+ */
+function entry_count( $choice_markup, $choice, $this, $value ) {
 	global $wpdb;
-	
-	/*
-	$query = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM " .  $wpdb->prefix . "rg_lead_detail " .
-						   "WHERE form_id=1 
-						   AND field_number='%s' 
-						   AND value='%s'", $input_id, $choice_value ) ); */
 
+	$insert_pos = strpos( $choice_markup, '</li>' );
+
+	// Field ID to search for
+	$choice_number = preg_match( '/\<input name\=[\']input_([^\']+)/', $choice_markup, $choices );
+
+	// Everything up until the ending <li> tag
+	$before = substr( $choice_markup, 0, $insert_pos );
+
+	// Ending </li> tag 
+	$after = substr( $choice_markup, $insert_pos );
+
+	$input_id = isset( $choices[1] ) ? $choices[1] : 0;
+	$choice_value = isset( $choice['value'] ) ? $choice['value'] : '';
+
+	$count = '';
 	$query = $wpdb->get_results( "SELECT * FROM " .  $wpdb->prefix . "rg_lead_detail " .
 						   "WHERE form_id=1 
 						   AND field_number LIKE $input_id
 						   AND value='$choice_value'", 'ARRAY_A' );
 
 	if( is_array( $query ) )
-		return '<span class="count">' . count( $query ) . '</span>';
+		$count = '<span class="count">' . count( $query ) . '</span>';
 
-	return false;
+
+	return $before . $count .  $after;
 }
-add_filter( 'gform_after_field', 'testa', 10, 4 );
-
-function testc( $lead, $form ) {
-	//print_r( $lead );
-	//print_r( $form );
-}	
-add_action( 'gform_entry_created', 'testc', 15, 2 );
+add_filter( 'gform_field_choice_markup_pre_render_1', 'entry_count', 10, 4 );
